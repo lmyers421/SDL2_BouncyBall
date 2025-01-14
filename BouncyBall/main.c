@@ -117,6 +117,7 @@ int main() {
 
 	int simulation_running = 1;
 	int ball_grabbed = 0;
+	int paused = 0;
 	SDL_Event event;
 	SDL_Rect eraserrect = (SDL_Rect){ 0, 0, sWIDTH, sHEGIHT };
 	struct Circle ball = { 100, 100, 25, 2, 0 };
@@ -134,6 +135,14 @@ int main() {
 				if (event.key.keysym.sym == SDLK_ESCAPE) {
 					simulation_running = 0;
 					break;
+				}
+				if (event.key.keysym.sym == SDLK_SPACE) {
+					if (paused) {
+						paused = 0;
+					}
+					else {
+						paused = 1;
+					}
 				}
 			}
 			if (event.type == SDL_MOUSEBUTTONDOWN)
@@ -157,10 +166,10 @@ int main() {
 
 		
 		FillCircle(surface, ball, 0xffffff);
-		if (!ball_grabbed) {
+		if (!ball_grabbed && !paused) {
 			StepSimulation(&ball);
 		}
-		else {
+		else if (ball_grabbed){
 			MoveCircle(&ball);
 		}
 		SDL_UpdateWindowSurface(window);
